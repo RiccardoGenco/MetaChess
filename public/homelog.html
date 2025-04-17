@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Chess 2.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .chess-piece {
+      position: absolute;
+      opacity: 0.1;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    .btn-gradient {
+      background: linear-gradient(45deg, #4e54c8, #8f94fb);
+      background-size: 200% 200%;
+      animation: gradient 3s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .chess-board-bg {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="50" height="50" fill="%234e54c8"/><rect x="50" y="0" width="50" height="50" fill="%238f94fb"/><rect x="0" y="50" width="50" height="50" fill="%238f94fb"/><rect x="50" y="50" width="50" height="50" fill="%234e54c8"/></svg>');
+      background-size: 100px 100px;
+      opacity: 0.05;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .game-card {
+      transition: all 0.3s ease;
+      background: rgba(30, 30, 60, 0.7);
+      backdrop-filter: blur(10px);
+    }
+    
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stats-card {
+      background: rgba(20, 20, 50, 0.6);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: scale(1.02);
+    }
+    
+    .online-dot {
+      animation: pulse 1.5s infinite;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Chess pieces floating in background -->
+  <i class="chess-piece fa-solid fa-chess-king text-6xl top-1/4 left-1/4" style="animation-delay: 0s;"></i>
+  <i class="chess-piece fa-solid fa-chess-queen text-5xl top-1/3 right-1/4" style="animation-delay: 1s;"></i>
+  <i class="chess-piece fa-solid fa-chess-rook text-4xl bottom-1/4 left-1/3" style="animation-delay: 2s;"></i>
+  <i class="chess-piece fa-solid fa-chess-bishop text-5xl bottom-1/3 right-1/3" style="animation-delay: 0.5s;"></i>
+  <i class="chess-piece fa-solid fa-chess-knight text-6xl top-1/5 right-1/5" style="animation-delay: 1.5s;"></i>
+  <i class="chess-piece fa-solid fa-chess-pawn text-3xl bottom-1/5 left-1/5" style="animation-delay: 2.5s;"></i>
+  
+  <!-- Chess board pattern background -->
+  <div class="chess-board-bg"></div>
+  
+  <!-- Navbar -->
+  <nav class="bg-gray-800 bg-opacity-70 backdrop-blur-lg border-b border-gray-700">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="bg-gradient-to-r from-purple-500 to-blue-500 p-2 rounded-lg">
+          <i class="fa-solid fa-chess text-xl"></i>
+        </div>
+        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+          Chess 2.0
+        </span>
+      </div>
+      
+      <div class="flex items-center space-x-6">
+        <a href="#" class="hover:text-purple-300 transition-colors duration-200">
+          <i class="fa-solid fa-gamepad mr-1"></i> Gioca
+        </a>
+        <a href="#" class="hover:text-purple-300 transition-colors duration-200">
+          <i class="fa-solid fa-ranking-star mr-1"></i> Classifica
+        </a>
+        <a href="#" class="hover:text-purple-300 transition-colors duration-200">
+          <i class="fa-solid fa-trophy mr-1"></i> Tornei
+        </a>
+        <a href="#" class="hover:text-purple-300 transition-colors duration-200">
+          <i class="fa-solid fa-user mr-1"></i> Profilo
+        </a>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full online-dot"></div>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+            <span class="font-semibold">U</span>
+          </div>
+        </div>
+        <button class="text-gray-300 hover:text-white">
+          <i class="fa-solid fa-gear text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container mx-auto px-4 py-8">
+    <!-- Welcome section -->
+    <div class="text-center mb-12 animate__animated animate__fadeIn">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+        Benvenuto, <span class="text-white">Utente</span>!
+      </h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        Pronto per la tua prossima sfida a scacchi? Sfida giocatori da tutto il mondo e scala la classifica!
+      </p>
+    </div>
+    
+    <!-- Quick actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="game-card rounded-xl p-6 shadow-lg border border-gray-700 animate__animated animate__fadeInUp">
+        <div class="flex items-center mb-4">
+          <div class="bg-gradient-to-r from-purple-500 to-blue-500 p-3 rounded-lg mr-4">
+            <i class="fa-solid fa-bolt text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold">Partita Rapida</h3>
+        </div>
+        <p class="text-gray-300 mb-6">Trova un avversario con abilità simili alla tua e inizia subito a giocare!</p>
+        <button class="btn-gradient w-full py-3 px-4 rounded-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl">
+          Gioca ora <i class="fa-solid fa-play ml-2"></i>
+        </button>
+      </div>
+      
+      <div class="game-card rounded-xl p-6 shadow-lg border border-gray-700 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="flex items-center mb-4">
+          <div class="bg-gradient-to-r from-purple-500 to-blue-500 p-3 rounded-lg mr-4">
+            <i class="fa-solid fa-users text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold">Sfida un Amico</h3>
+        </div>
+        <p class="text-gray-300 mb-6">Invita un amico a una partita privata con un link condiviso.</p>
+        <button class="btn-gradient w-full py-3 px-4 rounded-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl">
+          Crea sfida <i class="fa-solid fa-user-plus ml-2"></i>
+        </button>
+      </div>
+      
+      <div class="game-card rounded-xl p-6 shadow-lg border border-gray-700 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <div class="flex items-center mb-4">
+          <div class="bg-gradient-to-r from-purple-500 to-blue-500 p-3 rounded-lg mr-4">
+            <i class="fa-solid fa-robot text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold">Allenati</h3>
+        </div>
+        <p class="text-gray-300 mb-6">Migliora le tue abilità contro il nostro potente motore scacchistico.</p>
+        <button class="btn-gradient w-full py-3 px-4 rounded-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl">
+          Sfida il bot <i class="fa-solid fa-chess-knight ml-2"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Stats and leaderboard -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <!-- Player stats -->
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
+          <i class="fa-solid fa-chart-line mr-3 text-purple-400"></i> Le tue statistiche
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="stats-card rounded-lg p-4 border border-gray-700">
+            <div class="text-gray-400 text-sm mb-1">Punteggio ELO</div>
+            <div class="text-2xl font-bold text-purple-400">1,250</div>
+            <div class="text-xs text-green-400 mt-1">
+              <i class="fa-solid fa-caret-up mr-1"></i> +25 questa settimana
+            </div>
+          </div>
+          
+          <div class="stats-card rounded-lg p-4 border border-gray-700">
+            <div class="text-gray-400 text-sm mb-1">Partite giocate</div>
+            <div class="text-2xl font-bold">42</div>
+            <div class="text-xs text-gray-400 mt-1">12 vinte • 18 perse • 12 pareggi</div>
+          </div>
+          
+          <div class="stats-card rounded-lg p-4 border border-gray-700">
+            <div class="text-gray-400 text-sm mb-1">Vittorie</div>
+            <div class="text-2xl font-bold text-green-400">28.6%</div>
+            <div class="text-xs text-gray-400 mt-1">Miglior mese: 35%</div>
+          </div>
+          
+          <div class="stats-card rounded-lg p-4 border border-gray-700">
+            <div class="text-gray-400 text-sm mb-1">Posizione</div>
+            <div class="text-2xl font-bold">#4,215</div>
+            <div class="text-xs text-green-400 mt-1">
+              <i class="fa-solid fa-caret-up mr-1"></i> +120 questa settimana
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent games -->
+        <div class="mt-8">
+          <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa-solid fa-clock-rotate-left mr-2 text-blue-400"></i> Partite recenti
+          </h3>
+          
+          <div class="overflow-hidden rounded-lg border border-gray-700">
+            <table class="min-w-full divide-y divide-gray-700">
+              <thead class="bg-gray-800">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Avversario</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Risultato</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Data</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Durata</th>
+                </tr>
+              </thead>
+              <tbody class="bg-gray-800 bg-opacity-50 divide-y divide-gray-700">
+                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mr-3">
+                        <span class="font-semibold">M</span>
+                      </div>
+                      <div>
+                        <div class="text-sm font-medium">MasterChess</div>
+                        <div class="text-sm text-gray-400">ELO 1,320</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-900 text-red-100">Sconfitta</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">2 ore fa</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">15 min</td>
+                </tr>
+                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mr-3">
+                        <span class="font-semibold">N</span>
+                      </div>
+                      <div>
+                        <div class="text-sm font-medium">Novizio88</div>
+                        <div class="text-sm text-gray-400">ELO 1,180</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-100">Vittoria</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">Ieri</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">8 min</td>
+                </tr>
+                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mr-3">
+                        <span class="font-semibold">C</span>
+                      </div>
+                      <div>
+                        <div class="text-sm font-medium">ChessPro</div>
+                        <div class="text-sm text-gray-400">ELO 1,290</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-100">Pareggio</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">3 giorni fa</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">22 min</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Leaderboard -->
+      <div>
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
+          <i class="fa-solid fa-trophy mr-3 text-yellow-400"></i> Classifica Top 10
+        </h2>
+        
+        <div class="bg-gray-800 bg-opacity-70 backdrop-blur-lg rounded-xl border border-gray-700 overflow-hidden">
+          <div class="divide-y divide-gray-700">
+            <!-- Top 3 with special styling -->
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-300 flex items-center justify-center text-gray-900 font-bold mr-3">
+                  1
+                </div>
+                <div class="flex-grow">
+                  <div class="font-semibold">GrandMasterX</div>
+                  <div class="text-sm text-gray-400">ELO 2,850</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-300 flex items-center justify-center">
+                  <i class="fa-solid fa-crown text-gray-900"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-gray-400 to-gray-200 flex items-center justify-center text-gray-900 font-bold mr-3">
+                  2
+                </div>
+                <div class="flex-grow">
+                  <div class="font-semibold">ChessQueen</div>
+                  <div class="text-sm text-gray-400">ELO 2,810</div>
+                </div>
+                <div class="text-yellow-400">
+                  <i class="fa-solid fa-chess-queen"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-600 to-amber-400 flex items-center justify-center text-gray-900 font-bold mr-3">
+                  3
+                </div>
+                <div class="flex-grow">
+                  <div class="font-semibold">PawnStorm</div>
+                  <div class="text-sm text-gray-400">ELO 2,790</div>
+                </div>
+                <div class="text-amber-500">
+                  <i class="fa-solid fa-chess-pawn"></i>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Rest of top 10 -->
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  4
+                </div>
+                <div class="flex-grow">
+                  <div>CheckMateKing</div>
+                  <div class="text-sm text-gray-400">ELO 2,740</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  5
+                </div>
+                <div class="flex-grow">
+                  <div>BishopSlayer</div>
+                  <div class="text-sm text-gray-400">ELO 2,710</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  6
+                </div>
+                <div class="flex-grow">
+                  <div>RookMaster</div>
+                  <div class="text-sm text-gray-400">ELO 2,680</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  7
+                </div>
+                <div class="flex-grow">
+                  <div>KnightRider</div>
+                  <div class="text-sm text-gray-400">ELO 2,650</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  8
+                </div>
+                <div class="flex-grow">
+                  <div>EndGamePro</div>
+                  <div class="text-sm text-gray-400">ELO 2,630</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  9
+                </div>
+                <div class="flex-grow">
+                  <div>ChessWizard</div>
+                  <div class="text-sm text-gray-400">ELO 2,610</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-4 hover:bg-gray-700 transition-colors duration-200">
+              <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center font-bold mr-3">
+                  10
+                </div>
+                <div class="flex-grow">
+                  <div>PawnToQueen</div>
+                  <div class="text-sm text-gray-400">ELO 2,590</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-4 text-center border-t border-gray-700">
+            <a href="#" class="text-purple-400 hover:text-purple-300 transition-colors duration-200 text-sm">
+              Vedi classifica completa <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Online players -->
+        <div class="mt-8">
+          <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa-solid fa-users-line mr-2 text-green-400"></i> Giocatori online
+          </h3>
+          
+          <div class="bg-gray-800 bg-opacity-70 backdrop-blur-lg rounded-xl border border-gray-700 p-4">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <div class="w-2 h-2 rounded-full bg-green-500 mr-2 online-dot"></div>
+                <span class="text-sm">12,548 giocatori online</span>
+              </div>
+              <span class="text-xs text-gray-400">Ultimo aggiornamento: ora</span>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4">
+              <div class="text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mx-auto mb-2">
+                  <span class="font-bold text-xl">A</span>
+                </div>
+                <div class="text-sm truncate">AlphaChess</div>
+                <div class="text-xs text-gray-400">ELO 2,450</div>
+              </div>
+              
+              <div class="text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mx-auto mb-2">
+                  <span class="font-bold text-xl">B</span>
+                </div>
+                <div class="text-sm truncate">BetaPlayer</div>
+                <div class="text-xs text-gray-400">ELO 2,320</div>
+              </div>
+              
+              <div class="text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mx-auto mb-2">
+                  <span class="font-bold text-xl">G</span>
+                </div>
+                <div class="text-sm truncate">GammaGambit</div>
+                <div class="text-xs text-gray-400">ELO 2,280</div>
+              </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+              <button class="text-sm text-purple-400 hover:text-purple-300 transition-colors duration-200">
+                Sfida casuale <i class="fa-solid fa-shuffle ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tournament section -->
+    <div class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 flex items-center">
+        <i class="fa-solid fa-calendar-star mr-3 text-red-400"></i> Tornei in corso
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="game-card rounded-xl overflow-hidden border border-gray-700">
+          <div class="bg-gradient-to-r from-purple-600 to-blue-600 p-4">
+            <h3 class="text-xl font-bold">Torneo Lampo</h3>
+            <p class="text-sm text-purple-200">Blitz 3+2 • 128 giocatori</p>
+          </div>
+          <div class="p-4 bg-gray-800">
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <div class="text-xs text-gray-400">In corso</div>
+                <div class="text-sm">Fase 3/5</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-400">Premio</div>
+                <div class="text-sm font-semibold text-yellow-400">$500</div>
+              </div>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full" style="width: 60%"></div>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400 mb-4">
+              <span>78/128 giocatori</span>
+              <span>Termina tra 2h 15m</span>
+            </div>
+            <button class="btn-gradient w-full py-2 px-4 rounded-lg font-semibold text-white text-sm shadow-lg transition-all duration-300 hover:shadow-xl">
+              Unisciti ora <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="game-card rounded-xl overflow-hidden border border-gray-700">
+          <div class="bg-gradient-to-r from-red-600 to-orange-600 p-4">
+            <h3 class="text-xl font-bold">Torneo Weekend</h3>
+            <p class="text-sm text-red-200">Rapid 15+10 • 256 giocatori</p>
+          </div>
+          <div class="p-4 bg-gray-800">
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <div class="text-xs text-gray-400">Iscrizioni</div>
+                <div class="text-sm">Aperte</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-400">Premio</div>
+                <div class="text-sm font-semibold text-yellow-400">$1,200</div>
+              </div>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full" style="width: 45%"></div>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400 mb-4">
+              <span>115/256 giocatori</span>
+              <span>Inizia domani</span>
+            </div>
+            <button class="btn-gradient w-full py-2 px-4 rounded-lg font-semibold text-white text-sm shadow-lg transition-all duration-300 hover:shadow-xl" style="background: linear-gradient(45deg, #f43f5e, #f97316);">
+              Iscriviti <i class="fa-solid fa-user-plus ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="game-card rounded-xl overflow-hidden border border-gray-700">
+          <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-4">
+            <h3 class="text-xl font-bold">Torneo Novizi</h3>
+            <p class="text-sm text-green-200">Classical 30+0 • ELO < 1500</p>
+          </div>
+          <div class="p-4 bg-gray-800">
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <div class="text-xs text-gray-400">Prossimo</div>
+                <div class="text-sm">Lunedì</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-400">Premio</div>
+                <div class="text-sm font-semibold text-yellow-400">$300</div>
+              </div>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full" style="width: 30%"></div>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400 mb-4">
+              <span>42/128 giocatori</span>
+              <span>Iscrizioni aperte</span>
+            </div>
+            <button class="btn-gradient w-full py-2 px-4 rounded-lg font-semibold text-white text-sm shadow-lg transition-all duration-300 hover:shadow-xl" style="background: linear-gradient(45deg, #10b981, #059669);">
+              Prenotati <i class="fa-solid fa-calendar-check ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="bg-gray-800 bg-opacity-70 backdrop-blur-lg border-t border-gray-700 py-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="bg-gradient-to-r from-purple-500 to-blue-500 p-2 rounded-lg">
+              <i class="fa-solid fa-chess text-xl"></i>
+            </div>
+            <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+              Chess 2.0
+            </span>
+          </div>
+          <p class="text-gray-400 text-sm">
+            La piattaforma di scacchi competitivi più avanzata. Gioca, impara e competi con giocatori da tutto il mondo.
+          </p>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Navigazione</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Home</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Gioca</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Classifica</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Tornei</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Profilo</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Risorse</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Lezioni</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Puzzle</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Analisi</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">Blog</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors duration-200">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Social</h3>
+          <div class="flex space-x-4 mb-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-purple-600 transition-colors duration-200">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors duration-200">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-red-600 transition-colors duration-200">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-purple-500 transition-colors duration-200">
+              <i class="fab fa-twitch"></i>
+            </a>
+          </div>
+          <p class="text-gray-400 text-sm">
+            Iscriviti alla nostra newsletter per novità e promozioni:
+          </p>
+          <div class="mt-2 flex">
+            <input type="email" placeholder="La tua email" class="px-3 py-2 bg-gray-700 text-white text-sm rounded-l-lg focus:outline-none w-full">
+            <button class="bg-gradient-to-r from-purple-500 to-blue-500 px-4 py-2 text-sm font-semibold rounded-r-lg hover:opacity-90 transition-opacity duration-200">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">
+          © 2023 Chess 2.0. Tutti i diritti riservati.
+        </p>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors duration-200">Termini</a>
+          <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors duration-200">Privacy</a>
+          <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors duration-200">Cookie</a>
+          <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors duration-200">Contatti</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Animate elements on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+      const animatedElements = document.querySelectorAll('.animate__animated');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const animation = entry.target.getAttribute('data-animate');
+            entry.target.classList.add(animation);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      animatedElements.forEach(element => {
+        observer.observe(element);
+      });
+      
+      // Simulate online status
+      setInterval(() => {
+        const onlineDot = document.querySelector('.online-dot');
+        onlineDot.style.animation = 'none';
+        setTimeout(() => {
+          onlineDot.style.animation = 'pulse 1.5s infinite';
+        }, 10);
+      }, 3000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrazione - Chess 2.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .chess-piece {
+      position: absolute;
+      opacity: 0.1;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    .input-field {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-field:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-gradient {
+      background: linear-gradient(45deg, #4e54c8, #8f94fb);
+      background-size: 200% 200%;
+      animation: gradient 3s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .chess-board-bg {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="50" height="50" fill="%234e54c8"/><rect x="50" y="0" width="50" height="50" fill="%238f94fb"/><rect x="0" y="50" width="50" height="50" fill="%238f94fb"/><rect x="50" y="50" width="50" height="50" fill="%234e54c8"/></svg>');
+      background-size: 100px 100px;
+      opacity: 0.05;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Chess pieces floating in background -->
+  <i class="chess-piece fa-solid fa-chess-king text-6xl top-1/4 left-1/4" style="animation-delay: 0s;"></i>
+  <i class="chess-piece fa-solid fa-chess-queen text-5xl top-1/3 right-1/4" style="animation-delay: 1s;"></i>
+  <i class="chess-piece fa-solid fa-chess-rook text-4xl bottom-1/4 left-1/3" style="animation-delay: 2s;"></i>
+  <i class="chess-piece fa-solid fa-chess-bishop text-5xl bottom-1/3 right-1/3" style="animation-delay: 0.5s;"></i>
+  <i class="chess-piece fa-solid fa-chess-knight text-6xl top-1/5 right-1/5" style="animation-delay: 1.5s;"></i>
+  <i class="chess-piece fa-solid fa-chess-pawn text-3xl bottom-1/5 left-1/5" style="animation-delay: 2.5s;"></i>
+  
+  <!-- Chess board pattern background -->
+  <div class="chess-board-bg"></div>
+  
+  <div class="container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-screen">
+    <div class="w-full max-w-md animate__animated animate__fadeIn">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="inline-block bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-full shadow-xl pulse">
+          <i class="fa-solid fa-chess text-4xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold mt-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+          Chess 2.0
+        </h1>
+        <p class="text-gray-300 mt-2">Competitive Online Chess Platform</p>
+      </div>
+      
+      <!-- Registration Form -->
+      <div class="bg-gray-800 bg-opacity-70 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden p-8">
+        <h2 class="text-2xl font-semibold mb-6 text-center">Crea il tuo account</h2>
+        
+        <form id="registerForm" class="space-y-6">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fa-solid fa-user text-gray-400"></i>
+              </div>
+              <input 
+                type="text" 
+                id="name" 
+                placeholder="Il tuo username per il login" 
+                required
+                class="input-field w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all duration-300"
+              >
+            </div>
+          </div>
+          
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fa-solid fa-lock text-gray-400"></i>
+              </div>
+              <input 
+                type="password" 
+                id="password" 
+                placeholder="Crea una password sicura" 
+                required
+                class="input-field w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all duration-300"
+              >
+            </div>
+          </div>
+          
+          <div>
+            <label for="display_name" class="block text-sm font-medium text-gray-300 mb-1">Nome visibile</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fa-solid fa-chess-king text-gray-400"></i>
+              </div>
+              <input 
+                type="text" 
+                id="display_name" 
+                placeholder="Come ti vedranno gli avversari" 
+                required
+                class="input-field w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all duration-300"
+              >
+            </div>
+          </div>
+          
+          <div class="pt-2">
+            <button 
+              type="submit" 
+              class="btn-gradient w-full py-3 px-4 rounded-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
+            >
+              Registrati e inizia a giocare
+              <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </form>
+        
+        <div class="mt-6 text-center text-sm text-gray-400">
+          Hai già un account? 
+          <a href="#" class="text-purple-400 hover:text-purple-300 transition-colors duration-200">
+            Accedi qui
+          </a>
+        </div>
+      </div>
+      
+      <div id="output" class="mt-6 text-center text-sm"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Show loading state
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrazione in corso...';
+      submitBtn.disabled = true;
+      
+      const user = {
+        name: document.getElementById('name').value,
+        password: document.getElementById('password').value,
+        display_name: document.getElementById('display_name').value
+      };
+      
+      try {
+        // Simulate API call with delay for demo purposes
+       // await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // In a real app, you would use:
+        
+        const response = await fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(user)
+        });
+        
+        if (!response.ok) {
+          throw new Error('Registration failed');
+        }
+        
+        
+        // Show success message
+        document.getElementById('output').innerHTML = `
+          <div class="animate__animated animate__fadeIn bg-green-800 bg-opacity-50 text-green-200 px-4 py-2 rounded-lg">
+            <i class="fas fa-check-circle mr-2"></i> Registrazione completata con successo!
+          </div>
+        `;
+        
+        // Redirect to home after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'homelog.html';
+        }, 2000);
+        
+      } catch (err) {
+        document.getElementById('output').innerHTML = `
+          <div class="animate__animated animate__shakeX bg-red-800 bg-opacity-50 text-red-200 px-4 py-2 rounded-lg">
+            <i class="fas fa-exclamation-circle mr-2"></i> Errore nella registrazione: ${err.message}
+          </div>
+        `;
+        
+        // Reset button
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+      }
+    });
+    
+    // Add animation to form inputs on focus
+    document.querySelectorAll('.input-field').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.querySelector('i').classList.remove('text-gray-400');
+        this.parentElement.querySelector('i').classList.add('text-purple-400');
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentElement.querySelector('i').classList.remove('text-purple-400');
+        this.parentElement.querySelector('i').classList.add('text-gray-400');
+      });
+    });
+  </script>
+</body>
+</html>
