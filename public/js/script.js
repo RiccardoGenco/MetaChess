@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
 
     registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();  // Preveniamo il comportamento di default (submit del form)
+        e.preventDefault();  // Evita il refresh
 
         const formData = new FormData(registerForm);
         const data = Object.fromEntries(formData.entries());
@@ -14,11 +14,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data)
             });
 
-            const result = await response.text();
-            document.getElementById('registerResult').innerText = result;
+            if (!response.ok) {
+                throw new Error('Registrazione fallita.');
+            }
+
+            const result = await response.json();
+
+            if (result.token) {
+                localStorage.setItem('token', result.token);
+                document.getElementById('registerResult').innerText = 'Registrazione avvenuta con successo! Token salvato.';
+                console.log('Token ricevuto:', result.token);
+            } else {
+                document.getElementById('registerResult').innerText = 'Registrazione completata ma nessun token ricevuto.';
+            }
+
         } catch (error) {
             console.error('Errore durante la registrazione:', error);
-            document.getElementById('registerResult').innerText = 'Errore durante la registrazione';
+            document.getElementById('registerResult').innerText = 'Errore durante la registrazione.';
         }
     });
 });

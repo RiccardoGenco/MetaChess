@@ -43,7 +43,14 @@ app.post('/users', async (req, res) => {
         console.error('Errore durante l\'inserimento: ', err);
         return res.status(500).send('Errore durante la registrazione dell\'utente.');
       }
-      res.status(201).send('Utente registrato con successo!');
+      const jwt = require('jsonwebtoken');
+const token = jwt.sign(
+  { id: result.insertId, name: name, display_name: display_name },
+  process.env.JWT_SECRET,
+  { expiresIn: '1h' }
+);
+res.status(201).json({ token });
+
     });
 
   } catch (error) {
@@ -74,7 +81,15 @@ app.post('/users/login', async (req, res) => {
 
     try {
       if (await bcrypt.compare(password, user.password)) {
-        res.send(`Login effettuato con successo! Benvenuto ${user.display_name}`);
+        // GENERA IL TOKEN
+        const token = jwt.sign(
+          { id: user.id, name: user.name, display_name: user.display_name },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' } // validità token
+        );
+
+        // INVIA IL TOKEN AL CLIENT
+        res.json({ message: `Login effettuato!`, token });
       } else {
         res.status(401).send('Password errata.');
       }
@@ -84,6 +99,7 @@ app.post('/users/login', async (req, res) => {
     }
   });
 });
+
 
 // Avvio del server
 app.listen(3000, () => {
